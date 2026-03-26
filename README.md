@@ -2,9 +2,10 @@
 
 ## Description
 
-Cloud based inventory application. Inventory app will consist of a DynamoDB table, API Gateway and Lambda functions.
+- Cloud based inventory application.
+- Inventory app will consist of a DynamoDB table, API Gateway and Lambda functions.
 
 ## Authors
 
-Ralph Vitug
-James Barkman
+- Ralph Vitug
+- James Barkman
