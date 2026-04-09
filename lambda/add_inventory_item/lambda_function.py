@@ -1,11 +1,14 @@
+import os
 import boto3
 import json
 import ulid
 
+TABLE_NAME = os.environ.get('INVENTORY_TABLE_NAME', 'Inventory')
+
 def lambda_handler(event, context):
     # Initialize DynamoDB resource
     dynamodb = boto3.resource('dynamodb')
-    table = dynamodb.Table('Inventory')
+    table = dynamodb.Table(TABLE_NAME)
     
     try:
         # Parse request body
@@ -24,7 +27,7 @@ def lambda_handler(event, context):
                 }
         
         # Generate ULID for item ID
-        item_id = str(ulid.ulid())
+        item_id = str(ulid.new())
         
         # Create item dictionary
         item = {

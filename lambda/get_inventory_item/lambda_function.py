@@ -1,10 +1,13 @@
+import os
 import boto3
 import json
+
+TABLE_NAME = os.environ.get('INVENTORY_TABLE_NAME', 'Inventory')
 
 def lambda_handler(event, context):
     # Initialize DynamoDB resource
     dynamodb = boto3.resource('dynamodb')
-    table = dynamodb.Table('Inventory')
+    table = dynamodb.Table(TABLE_NAME)
     
     try:
         # Get item ID from path parameters
