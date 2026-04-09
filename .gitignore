@@ -10,5 +10,8 @@ __pycache__/
 # Visual Studio Code
 .vscode/
 
-# YML files for reference only
+# YML files that are in here for reference only
 /yamal_files/
+
+# AWS secret sync python scripts
+sync_aws_secrets.py
