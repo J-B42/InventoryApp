@@ -2,6 +2,7 @@ import os
 import boto3
 import json
 import ulid
+from decimal import Decimal
 
 TABLE_NAME = os.environ.get('INVENTORY_TABLE_NAME', 'Inventory')
 
@@ -35,7 +36,7 @@ def lambda_handler(event, context):
             'name': body['name'],
             'description': body['description'],
             'qty_on_hand': int(body['qty_on_hand']),
-            'price': float(body['price']),
+            'price': Decimal(str(body['price'])),
             'location_id': int(body['location_id'])
         }
         
@@ -45,7 +46,7 @@ def lambda_handler(event, context):
         # Return created item
         return {
             'statusCode': 201,
-            'body': json.dumps(item),
+            'body': json.dumps(item, default=str),  # Convert Decimal to string
             'headers': {
                 'Content-Type': 'application/json'
             }

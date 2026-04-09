@@ -1,6 +1,7 @@
 import os
 import boto3
 import json
+from boto3.dynamodb.conditions import Attr
 
 TABLE_NAME = os.environ.get('INVENTORY_TABLE_NAME', 'Inventory')
 
@@ -13,14 +14,17 @@ def lambda_handler(event, context):
         # Get item ID from path parameters
         item_id = event['pathParameters']['id']
         
-        # Get the item from DynamoDB
-        response = table.get_item(Key={'id': item_id})
+        # Scan for the item by id (since id is part of composite key)
+        response = table.scan(
+            FilterExpression=Attr('id').eq(item_id)
+        )
         
-        if 'Item' in response:
-            # Return the item
+        items = response['Items']
+        if items:
+            # Return the first (and should be only) item
             return {
                 'statusCode': 200,
-                'body': json.dumps(response['Item']),
+                'body': json.dumps(items[0], default=str),
                 'headers': {
                     'Content-Type': 'application/json'
                 }

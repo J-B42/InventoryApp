@@ -1,6 +1,7 @@
 import os
 import boto3
 import json
+from boto3.dynamodb.conditions import Attr
 
 TABLE_NAME = os.environ.get('INVENTORY_TABLE_NAME', 'Inventory')
 
@@ -13,23 +14,13 @@ def lambda_handler(event, context):
         # Get item ID from path parameters
         item_id = event['pathParameters']['id']
         
-        # Delete the item from DynamoDB
-        response = table.delete_item(
-            Key={'id': item_id},
-            ReturnValues='ALL_OLD'  # Return the deleted item if it existed
+        # Scan for the item by id to find it first
+        scan_response = table.scan(
+            FilterExpression=Attr('id').eq(item_id)
         )
         
-        if 'Attributes' in response:
-            # Item was deleted
-            return {
-                'statusCode': 204,
-                'body': '',
-                'headers': {
-                    'Content-Type': 'application/json'
-                }
-            }
-        else:
-            # Item not found
+        items = scan_response['Items']
+        if not items:
             return {
                 'statusCode': 404,
                 'body': json.dumps({'error': 'Item not found'}),
@@ -37,6 +28,21 @@ def lambda_handler(event, context):
                     'Content-Type': 'application/json'
                 }
             }
+        
+        # Get the full key (id + location_id)
+        item = items[0]
+        key = {'id': item['id'], 'location_id': item['location_id']}
+        
+        # Delete the item
+        table.delete_item(Key=key)
+        
+        return {
+            'statusCode': 204,
+            'body': '',
+            'headers': {
+                'Content-Type': 'application/json'
+            }
+        }
     except KeyError:
         # Missing path parameter
         return {
