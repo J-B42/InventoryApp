@@ -15,3 +15,10 @@ __pycache__/
 
 # AWS secret sync python scripts
 sync_aws_secrets.py
+
+# SAM template for API Gateway and Lambda functions
+template.yaml
+
+# Internal testing files
+response.json
+samconfig.toml
