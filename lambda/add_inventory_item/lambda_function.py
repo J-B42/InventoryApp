@@ -7,6 +7,16 @@ from decimal import Decimal
 # v1.1 - Deployed via fixed GitHub Actions
 TABLE_NAME = os.environ.get('INVENTORY_TABLE_NAME', 'Inventory')
 
+def _generate_ulid() -> str:
+    # Support common ulid package variants used in Lambda deployments.
+    if hasattr(ulid, 'new'):
+        return str(ulid.new())
+    if hasattr(ulid, 'ULID'):
+        return str(ulid.ULID())
+    if hasattr(ulid, 'ulid'):
+        return str(ulid.ulid())
+    raise RuntimeError('ULID library does not expose a supported generator')
+
 def lambda_handler(event, context):
     # Initialize DynamoDB resource
     dynamodb = boto3.resource('dynamodb')
@@ -29,7 +39,7 @@ def lambda_handler(event, context):
                 }
         
         # Generate ULID for item ID
-        item_id = str(ulid.new())
+        item_id = _generate_ulid()
         
         # Create item dictionary
         item = {
