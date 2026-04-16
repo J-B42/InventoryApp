@@ -38,8 +38,12 @@ def lambda_handler(event, context):
         table.delete_item(Key=key)
         
         return {
-            'statusCode': 204,
-            'body': '',
+            'statusCode': 200,
+            'body': json.dumps({
+                'message': 'Item deleted successfully',
+                'id': item_id,
+                'location_id': item['location_id']
+            }),
             'headers': {
                 'Content-Type': 'application/json'
             }
