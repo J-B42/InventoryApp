@@ -14,11 +14,11 @@ jobs:
     strategy:
       matrix:
         function:
-          - name: get_all_inventory_items
-          - name: get_inventory_item
-          - name: add_inventory_item
-          - name: delete_inventory_item
-          - name: get_location_inventory_items
+          - get_all_inventory_items
+          - get_inventory_item
+          - add_inventory_item
+          - delete_inventory_item
+          - get_location_inventory_items
     steps:
       - name: Checkout
         uses: actions/checkout@v4
