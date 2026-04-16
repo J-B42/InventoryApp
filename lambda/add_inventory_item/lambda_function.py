@@ -4,6 +4,7 @@ import json
 import ulid
 from decimal import Decimal
 
+# v1.1 - Deployed via fixed GitHub Actions
 TABLE_NAME = os.environ.get('INVENTORY_TABLE_NAME', 'Inventory')
 
 def lambda_handler(event, context):

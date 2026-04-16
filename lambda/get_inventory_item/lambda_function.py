@@ -3,6 +3,7 @@ import boto3
 import json
 from boto3.dynamodb.conditions import Attr
 
+# v1.1 - Deployed via fixed GitHub Actions
 TABLE_NAME = os.environ.get('INVENTORY_TABLE_NAME', 'Inventory')
 
 def lambda_handler(event, context):
