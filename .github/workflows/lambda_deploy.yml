@@ -13,12 +13,17 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        function:
-          - get_all_inventory_items
-          - get_inventory_item
-          - add_inventory_item
-          - delete_inventory_item
-          - get_location_inventory_items
+        include:
+          - function_name: get_all_inventory_items
+            function_dir: lambda/get_all_inventory_items
+          - function_name: get_inventory_item
+            function_dir: lambda/get_inventory_item
+          - function_name: add_inventory_item
+            function_dir: lambda/add_inventory_item
+          - function_name: delete_inventory_item
+            function_dir: lambda/delete_inventory_item
+          - function_name: get_location_inventory_items
+            function_dir: lambda/get_location_inventory_items
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -29,18 +34,23 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: us-east-1
+      - name: Validate function directory
+        run: |
+          echo "Deploying function: ${{ matrix.function_name }}"
+          echo "Function directory: ${{ matrix.function_dir }}"
+          test -d "${{ matrix.function_dir }}"
       - name: Install dependencies
         run: |
           if [ -f requirements.txt ]; then
             pip install -r requirements.txt -t .
           fi
-        working-directory: ./lambda/${{ matrix.function }}
-      - name: Zip the ${{ matrix.function }} Lambda function
+        working-directory: ${{ matrix.function_dir }}
+      - name: Zip the ${{ matrix.function_name }} Lambda function
         run: zip -r function.zip ./*
-        working-directory: ./lambda/${{ matrix.function }}
+        working-directory: ${{ matrix.function_dir }}
       - name: Update Lambda function code
-        run: aws lambda update-function-code --function-name ${{ matrix.function }} --zip-file fileb://function.zip --publish
-        working-directory: ./lambda/${{ matrix.function }}
-      - name: Cleanup ${{ matrix.function }} zip
+        run: aws lambda update-function-code --function-name ${{ matrix.function_name }} --zip-file fileb://function.zip --publish
+        working-directory: ${{ matrix.function_dir }}
+      - name: Cleanup ${{ matrix.function_name }} zip
         run: rm function.zip
-        working-directory: ./lambda/${{ matrix.function }}
+        working-directory: ${{ matrix.function_dir }}
