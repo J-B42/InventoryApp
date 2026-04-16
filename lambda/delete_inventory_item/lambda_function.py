@@ -43,7 +43,7 @@ def lambda_handler(event, context):
                 'message': 'Item deleted successfully',
                 'id': item_id,
                 'location_id': item['location_id']
-            }),
+            }, default=str),
             'headers': {
                 'Content-Type': 'application/json'
             }
