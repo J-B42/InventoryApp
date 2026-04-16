@@ -3,6 +3,7 @@ import boto3
 import json
 from boto3.dynamodb.conditions import Key
 
+# v1.1 - Deployed via fixed GitHub Actions
 TABLE_NAME = os.environ.get('INVENTORY_TABLE_NAME', 'Inventory')
 LOCATION_INDEX_NAME = os.environ.get('LOCATION_INDEX_NAME', 'Reverse_PK_SK')
 
